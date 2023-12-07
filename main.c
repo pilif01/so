@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <limits.h>
 
 typedef struct {
     char magic[2];
@@ -28,7 +29,7 @@ typedef struct {
 
 struct stat fileStat;
 
-void processFile(char *inputPath, char *outputDir, char c);
+void processFile(char *inputPath, char c);
 
 void convertToGray(char *filePath);
 
@@ -53,7 +54,7 @@ int main(int argc, char *argv[]) {
                     exit(-1);
                 } else if (pid == 0) {
                     // Proces fiu
-                    processFile(inputPath, argv[2], argv[3][0]);
+                    processFile(inputPath, argv[3][0]);
                     exit(0);
                 }
             }
@@ -80,7 +81,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-void processFile(char *inputPath, char *outputDir) {
+void processFile(char *inputPath, char c) {
     char buffer[1000];
     int bytesRead;
     int fileDescriptor;
@@ -120,7 +121,7 @@ void processFile(char *inputPath, char *outputDir) {
         exit(-1);
     } else {
         stat(inputPath, &fileStat);
-        printf("Dimensiune fisier: %d bytes\n", fileStat.st_size);
+        printf("Dimensiune fisier: %ld bytes\n", fileStat.st_size);
         printf("\n");
 
         if (S_ISREG(fileStat.st_mode) && strstr(inputPath, ".bmp")) {
@@ -169,7 +170,8 @@ void processFile(char *inputPath, char *outputDir) {
             printf("S-a incheiat procesul pentru conversia la tonuri de gri cu pid-ul %d si codul %d\n", grayPid, WEXITSTATUS(status));
         }
     }
-        if (S_ISREG(fileStat.st_mode) && !strstr(inputPath, ".bmp")) {
+
+    if (S_ISREG(fileStat.st_mode) && !strstr(inputPath, ".bmp")) {
         printf("Latime: %d\n", imageInfo.width);
         printf("Inaltime: %d\n", imageInfo.height);
 
