@@ -9,21 +9,9 @@ filterChar=$1
 correctSentences=0
 
 while IFS= read -r sentence; do
-    # Verifica daca propozitia incepe cu litera mare
-    if [[ "$sentence" =~ ^[A-Z] ]]; then
-        # Verifica daca propozitia contine doar caractere valide
-        if [[ "$sentence" =~ ^[A-Za-z0-9, .!?]+$ ]]; then
-            # Verifica daca propozitia se termina cu ? sau ! sau .
-            if [[ "$sentence" =~ [?!.]$ ]]; then
-                # Verifica daca propozitia nu contine virgula (,) inainte de si
-                if [[ ! "$sentence" =~ ,.*\sși ]]; then
-                    # Verifica daca propozitia contine caracterul <c>
-                    if [[ "$sentence" =~ $filterChar ]]; then
-                        ((correctSentences++))
-                    fi
-                fi
-            fi
-        fi
+    # Verifica daca propozitia indeplineste toate conditiile
+    if [[ "$sentence" =~ ^[A-Z][A-Za-z0-9, .!?]+[?!.]$ && ! "$sentence" =~ ,.*\sși && "$sentence" =~ $filterChar ]]; then
+        ((correctSentences++))
     fi
 done
 
